@@ -103,12 +103,6 @@ flutter run
 
 ---
 
-# 📸 Preview
-
-Adicione aqui prints do aplicativo futuramente.
-
----
-
 # 💜 Desenvolvido por
 
 Gabriela Santos
