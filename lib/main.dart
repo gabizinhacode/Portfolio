@@ -658,16 +658,63 @@ class TelaSobreMim extends StatelessWidget {
   }
 }
 
-class TelaSkills extends StatelessWidget {
+class TelaSkills extends StatefulWidget {
   const TelaSkills({super.key});
 
+  @override
+  State<TelaSkills> createState() => _TelaSkillsState();
+}
+
+class _TelaSkillsState extends State<TelaSkills> {
   final Color rosa = const Color(0xFFF6B0BB);
   final Color rosaClaro = const Color(0xFFF8D7DA);
   final Color fundo = const Color(0xFFFFF6F7);
   final Color texto = const Color(0xFF5B4B4B);
 
+  String busca = '';
+
+  final List<Map<String, dynamic>> skills = [
+    {
+      'icone': Icons.phone_android,
+      'titulo': 'Flutter',
+      'descricao': 'Desenvolvimento de aplicativos mobile modernos.',
+    },
+    {
+      'icone': Icons.code,
+      'titulo': 'Dart',
+      'descricao': 'Linguagem utilizada para construção da lógica dos apps Flutter.',
+    },
+    {
+      'icone': Icons.web,
+      'titulo': 'React',
+      'descricao': 'Criação de interfaces web com componentes reutilizáveis.',
+    },
+    {
+      'icone': Icons.storage,
+      'titulo': 'Django REST',
+      'descricao': 'Desenvolvimento de APIs e integração com o front-end.',
+    },
+    {
+      'icone': Icons.design_services,
+      'titulo': 'Figma',
+      'descricao': 'Criação de protótipos e organização visual das telas.',
+    },
+    {
+      'icone': Icons.folder_copy_outlined,
+      'titulo': 'GitHub',
+      'descricao': 'Versionamento de código e organização de repositórios.',
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
+    final skillsFiltradas = skills.where((skill) {
+      final titulo = skill['titulo'].toString().toLowerCase();
+      final textoBusca = busca.toLowerCase();
+
+      return titulo.contains(textoBusca);
+    }).toList();
+
     return Scaffold(
       backgroundColor: fundo,
       appBar: AppBar(
@@ -676,118 +723,105 @@ class TelaSkills extends StatelessWidget {
         title: const Text('Minhas Skills'),
         centerTitle: true,
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(22),
+      body: Column(
         children: [
-          AnimacaoEntrada(
-            child: _skillCard(
-              icone: Icons.phone_android,
-              titulo: 'Flutter',
-              descricao:
-                  'Desenvolvimento de aplicativos mobile modernos utilizando Flutter.',
+          Padding(
+            padding: const EdgeInsets.all(22),
+            child: TextField(
+              onChanged: (valor) {
+                setState(() {
+                  busca = valor;
+                });
+              },
+              decoration: InputDecoration(
+                hintText: 'Pesquisar tecnologia...',
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: texto,
+                ),
+                filled: true,
+                fillColor: Colors.white.withOpacity(0.78),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(22),
+                  borderSide: BorderSide.none,
+                ),
+              ),
             ),
           ),
-          AnimacaoEntrada(
-            delay: 150,
-            child: _skillCard(
-              icone: Icons.code,
-              titulo: 'Dart',
-              descricao:
-                  'Linguagem utilizada para construção da lógica dos aplicativos Flutter.',
-            ),
-          ),
-          AnimacaoEntrada(
-            delay: 300,
-            child: _skillCard(
-              icone: Icons.web,
-              titulo: 'React',
-              descricao:
-                  'Criação de interfaces web utilizando componentes reutilizáveis.',
-            ),
-          ),
-          AnimacaoEntrada(
-            delay: 450,
-            child: _skillCard(
-              icone: Icons.storage,
-              titulo: 'Django REST',
-              descricao:
-                  'Desenvolvimento de APIs e integração entre front-end e back-end.',
-            ),
-          ),
-          AnimacaoEntrada(
-            delay: 600,
-            child: _skillCard(
-              icone: Icons.design_services,
-              titulo: 'Figma',
-              descricao:
-                  'Criação de protótipos e planejamento de interfaces modernas.',
-            ),
-          ),
-          AnimacaoEntrada(
-            delay: 750,
-            child: _skillCard(
-              icone: Icons.folder_copy_outlined,
-              titulo: 'GitHub',
-              descricao:
-                  'Versionamento de código e gerenciamento de projetos.',
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget _skillCard({
-    required IconData icone,
-    required String titulo,
-    required String descricao,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 18),
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.78),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              color: rosaClaro,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Icon(
-              icone,
-              color: rosa,
-              size: 28,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Text(
+              '${skillsFiltradas.length} tecnologia(s) encontrada(s)',
+              style: TextStyle(
+                color: texto.withOpacity(0.75),
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
-          const SizedBox(width: 16),
+
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  titulo,
-                  style: TextStyle(
-                    color: texto,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 22),
+              itemCount: skillsFiltradas.length,
+              itemBuilder: (context, index) {
+                final skill = skillsFiltradas[index];
+
+                return AnimacaoEntrada(
+                  delay: index * 120,
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 18),
+                    padding: const EdgeInsets.all(18),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.78),
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(color: Colors.white),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: rosaClaro,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Icon(
+                            skill['icone'],
+                            color: rosa,
+                            size: 28,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                skill['titulo'],
+                                style: TextStyle(
+                                  color: texto,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                skill['descricao'],
+                                style: TextStyle(
+                                  color: texto.withOpacity(0.75),
+                                  height: 1.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  descricao,
-                  style: TextStyle(
-                    color: texto.withOpacity(0.75),
-                    height: 1.5,
-                  ),
-                ),
-              ],
+                );
+              },
             ),
           ),
         ],
@@ -795,7 +829,6 @@ class TelaSkills extends StatelessWidget {
     );
   }
 }
-
 class TelaContato extends StatelessWidget {
   const TelaContato({super.key});
 
